@@ -59,5 +59,5 @@ if __name__ == "__main__":
     s = makeSaved([(10,"procento","k"),(0,"zbytek","k1")], "d", "c", 1000, "")
     print(s)
     print(makeDesc(json.loads(s),290))
-    r = sendDesc(json.loads(s),290)
+    r = sendDesc(json.loads(s),290,"")
     print(r)
