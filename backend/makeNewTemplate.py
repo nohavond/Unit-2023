@@ -13,6 +13,14 @@ def makeSaved(listIn, desc, firma, total, name):
 
 def makeDesc(o, id):
     l0 =[]
+    l1 = []
+    for v in o["listIn"]:
+        o1 = {}
+        o1.hodnota = v[0]
+        o1.typ = v[1]
+        o1.id = v[2]
+        o1.cena = 0
+        l1.append(o1)
     suma = 0
     for i in o["listIn"]:
         if (i.typ == "procento"):
