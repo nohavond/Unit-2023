@@ -25,17 +25,17 @@ def makeDesc(o, id):
         o1["cena"] = 0
         l1.append(o1)
     suma = 0
-    for i in o["listIn"]:
-        if (i.typ == "procento"):
+    for i in l1:
+        if (i["typ"]  == "procento"):
             i["cena"] = i["hodnota"] * o["total"]
             suma += i["cena"]
-        elif (i.typ == "absolutni"):
+        elif (i["typ"]  == "absolutni"):
             i["cena"] = i["hodnota"]
             suma += i["cena"]
-    for i in o["listIn"]:
-        if (i.typ == "zbytek"):
+    for i in l1:
+        if (i["typ"] == "zbytek"):
             i["cena"] = o["total"]-suma
-    for i in o["listIn"]:
+    for i in l1:
         o = {
                     "mnozMj": 1,
                     "cenaMj":  i["cena"],
@@ -54,3 +54,8 @@ def sendObj(o):
 
 def getDistance(string1, string2):
     return textdistance.damerau_levenshtein.normalized_distance(string1,string2)
+
+if __name__ == "__main__":
+    s = makeSaved([(10,"procento","k"),(0,"zbytek","k1")], "d", "c", 1000, "n")
+    print(s)
+    print(makeDesc(json.loads(s),270))
