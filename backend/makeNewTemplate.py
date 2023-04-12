@@ -1,19 +1,43 @@
 import json
 import requests
 import textdistance
-def makeObj(list):
+
+def makeSaved(listIn, desc, id, total):
+    o = {}
+    o["listIn"] = listIn
+    o["desc"] = desc
+    o["id"] = id
+    o["total"] = total
+    return json.dumps(o)
+
+def makeDesc(o):
     l0 =[]
-    for i in list:
+    suma = 0
+    for i in o["listIn"]:
+        if (i.typ == "procento"):
+            i.cena = i.hodnota * o["total"]
+            suma += i.cena
+        elif (i.typ == "absolutni"):
+            i.cena = i.hodnota
+            suma += i.cena
+    for i in o["listIn"]:
+        if (i.typ == "zbytek"):
+            i.cena = o["total"]-suma
+    for i in o["listIn"]:
         o = {
                     "mnozMj": 1,
-                    "cenaMj": i.cena,
+                    "cenaMj":  i.cena,
                     "typSzbDphK": "typSzbDph.dphOsv",
                     "kopStred": False,
                     "stredisko": i.id
                 },
         l0.append(o)
-    l = [{"id": "123"},{"bezPolozek": False},{"polozkyFaktury@removeAll": True}, {"polozkyFaktury":l0}]
-    r = {"winstrom" : {"faktura-prijata" : l, "@version" : "1.0"}}
+    l = [{"id": o["id"]},{"bezPolozek": False},{"polozkyFaktury@removeAll": True}, {"polozkyFaktury":l0}]
+    r = {"winstrom": {"faktura-prijata" : l, "@version" : "1.0"}}
+    return r
+
+def makeObjFromDesc(o):
+    r = {"winstrom": o["winstrom"]}
     return r
 
 def sendObj(o):
