@@ -45,7 +45,6 @@ def create_slider(remaining_price, i):
     st.subheader(f"Vyberte částku pro středisko {i}")
     options = ['Procenta', 'Absolutní hodnota', 'Zbytek ceny']
     option = st.radio("", options, key=i)
-    popis = ""
     if option == 'Procenta':
         val = st.slider(f"Vyberte částku pro středisko {i}", float(0), float(remaining_price * 100 / castka),
                         label_visibility='hidden')
@@ -62,7 +61,7 @@ def create_slider(remaining_price, i):
         val = st.slider(f"Vyberte částku pro středisko {i}", float(0), remaining_price, value=remaining_price,
                         label_visibility='hidden')
         popis = "zbytek"
-    return val, popis
+    return val, popis, i
 
 
 # creates sliders for every stredisko
@@ -73,8 +72,8 @@ def create_strediska(opt, remaining_price):
     counter = 0
     for i in opt:
         if remaining_price > 0:
-            val, label = create_slider(remaining_price, i)
-            values[counter] = (val, label)
+            val, label, stredisko = create_slider(remaining_price, i)
+            values[counter] = (val, label, stredisko)
             counter += 1
             remaining_price -= val
     return remaining_price, values
