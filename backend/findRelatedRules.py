@@ -8,7 +8,7 @@ class RuleFinder:
   auth = HTTPBasicAuth('c6.user3', 'c6.user3.flexi')
 
   def post_rule_interface(self, template):
-
+    template=json.loads(template)
     if template["name"]!="":
       return self.post_rule(template, template["name"], template["id"], True)
     return self.post_rule(template, template["firma"], template["id"])
@@ -58,8 +58,8 @@ class RuleFinder:
 
 
 r = RuleFinder()
-#r.post_rule_interface({"total":579, "id":987, "firma":"a","name":"" })
-print(r.get_rule("j", 23555))
+r.post_rule_interface('{"total":579, "id":987, "firma":"blabla","name":"" }')
+print(r.get_rule("blabla", 23555))
 #r.get_rule("try")
 auth = HTTPBasicAuth('c6.user3', 'c6.user3.flexi')
 response = requests.get("https://unit2023.flexibee.eu/v2/c/company6/global-store.json?detail=full", auth=auth)
