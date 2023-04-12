@@ -1,30 +1,20 @@
 import requests
 from requests.auth import HTTPDigestAuth, HTTPBasicAuth
 import json
+import textdistance
 
 
 class RuleFinder:
   auth = HTTPBasicAuth('c6.user3', 'c6.user3.flexi')
-  def post_rule(self, json_to_put, name, direct_rule=False):
-    if not direct_rule:
-      r = requests.get("https://unit2023.flexibee.eu/v2/c/company6/global-store/47.json?detail=full", auth=self.auth)
-      r = r.json()
-      r = r["winstrom"]["global-store"][0]
-      print(r)
-      name= name+r["hodnota"]
 
-      to_put = {
-        "winstrom": {
-          "@version": "1.0",
-          "global-store": [
-            {
-              "id": "key:uc-index",
-              "hodnota": int(r["hodnota"])+1
-            }
-          ]
-        }
-      }
-      r = requests.post("https://unit2023.flexibee.eu/v2/c/company6/global-store", json=to_put, auth=self.auth)
+  def post_rule_interface(self, template):
+    if template["name"]!=None:
+      return self.post_rule(template, template["name"], template["id"], True)
+    return self.post_rule(template, template["firma"], template["id"])
+
+  def post_rule(self, json_to_put, name, id, direct_rule=False):
+    if not direct_rule:
+      name= name+str(id)
     else:
       name="direct-"+name
     to_put = {
@@ -58,17 +48,18 @@ class RuleFinder:
         indirect_rules.append(hodnota)
 
     if len(indirect_rules)>0:
-      indirect_rules.sort(key=lambda x:abs(x["price"]-price))
-      print("gihjo")
+      indirect_rules.sort(key=lambda x:abs(x["total"]-price))
       return indirect_rules[0]
+
+
     return None
 
 
 r = RuleFinder()
-print(r.post_rule({"sg":90, "price":2000}, "i"))
-print(r.post_rule({"sgsg":90, "price":200}, "ii"))
-print(r.post_rule({"sger":90, "price":200530}, "ii"))
-print(r.get_rule("ii", 23555))
+print(r.post_rule({"sg":90, "total":2000}, "j", 1))
+print(r.post_rule({"sgsg":90, "total":200}, "jj", 2))
+print(r.post_rule({"sger":90, "total":200530}, "jj", 3))
+print(r.get_rule("jj", 23555))
 #r.get_rule("try")
 auth = HTTPBasicAuth('c6.user3', 'c6.user3.flexi')
 response = requests.get("https://unit2023.flexibee.eu/v2/c/company6/global-store.json?detail=full", auth=auth)
