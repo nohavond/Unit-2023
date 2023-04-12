@@ -18,6 +18,7 @@ def makeDesc(o, id):
     l0 =[]
     l1 = []
     for v in o["listIn"]:
+        print(v)
         o1 = {}
         o1["hodnota"] = v[0]
         o1["typ"] = v[1]
@@ -56,7 +57,12 @@ def getDistance(string1, string2):
     return textdistance.damerau_levenshtein.normalized_distance(string1,string2)
 
 if __name__ == "__main__":
-    s = makeSaved([(10,"procento","k"),(0,"zbytek","k1")], "d", "c", 1000, "")
+    values = [[(10, "procento", "k")], [(0, "zbytek", "k1")]]
+    l = []
+    for vs in values:
+        for v in vs:
+            l.append(v)
+    s = makeSaved(l, "d", "c", 1000, "")
     print(s)
     print(makeDesc(json.loads(s),290))
     r = sendDesc(json.loads(s),290,"")

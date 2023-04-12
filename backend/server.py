@@ -75,13 +75,9 @@ def create_slider(remaining_price, i):
 def create_strediska(opt, remaining_price):
     values = []
     for i in opt:
-        values.append(0)
-    counter = 0
-    for i in opt:
         if remaining_price > 0:
             val, label, stredisko = create_slider(remaining_price, i)
-            values[counter] = (val, label, stredisko)
-            counter += 1
+            values.append((val, label, stredisko))
             remaining_price -= val
     return remaining_price, values
 
@@ -92,10 +88,7 @@ remaining_price, values = create_strediska(selected_options, castka)
 def save_template():
     template = st.text_input("Zde napište název templatu...")
     l = []
-    for vs in values:
-        for i in vs:
-            l.append(i)
-    o = makeSaved(l, info[3], info[2], castka, template)
+    o = makeSaved(values, info[3], info[2], castka, template)
     sendDesc(json.loads(o), info[0], session)
 
 
@@ -105,11 +98,8 @@ if remaining_price == 0:
         if st.button("Udělat vyúčtování"):
             st.success("Vyúčtování odesláno.")
     elif st.button("Udělat vyúčtování"):
-        l = []
-        for vs in values:
-            for i in vs:
-                l.append(i)
-        o = makeSaved(l, info[3], info[2], castka, "")
+        print(json.dumps(values))
+        o = makeSaved(values, info[3], info[2], castka, "")
         sendDesc(json.loads(o), info[0], session)
         st.success("Vyúčtování odesláno.")
 elif remaining_price != castka:
