@@ -1,9 +1,6 @@
 import streamlit as st
 from reuest import *
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import urllib3
-from urllib.parse import urlparse, parse_qs
-import html.parser
+from makeNewTemplate import makeSaved
 
 hostName = "localhost"
 serverPort = 3000
@@ -43,19 +40,30 @@ options, departments = load_departments()
 
 selected_options = st.multiselect('Vyberte střediska', options)
 
+
 def create_slider(remaining_price, i):
     st.subheader(f"Vyberte částku pro středisko {i}")
     options = ['Procenta', 'Absolutní hodnota', 'Zbytek ceny']
     option = st.radio("", options, key=i)
+    popis = ""
     if option == 'Procenta':
-        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), float(remaining_price*100/castka), label_visibility='hidden')
+        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), float(remaining_price * 100 / castka),
+                        label_visibility='hidden')
         val = castka * val * 0.01
         st.write(f"Vybraná cena: {val}")
+        popis="procento"
+
     elif option == 'Absolutní hodnota':
-        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), max_value=remaining_price,  label_visibility='hidden')
+        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), max_value=remaining_price,
+                        label_visibility='hidden')
+        popis = "absolutni"
+
     else:
-        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), remaining_price, value=remaining_price,  label_visibility='hidden')
-    return val
+        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), remaining_price, value=remaining_price,
+                        label_visibility='hidden')
+        popis = "zbytek"
+    return val, popis
+
 
 # creates sliders for every stredisko
 def create_strediska(opt, remaining_price):
@@ -65,8 +73,8 @@ def create_strediska(opt, remaining_price):
     counter = 0
     for i in opt:
         if remaining_price > 0:
-            val = create_slider(remaining_price, i)
-            values[counter] = val
+            val, label = create_slider(remaining_price, i)
+            values[counter] = (val, label)
             counter += 1
             remaining_price -= val
     return remaining_price, values
@@ -77,7 +85,7 @@ remaining_price, values = create_strediska(selected_options, castka)
 
 def save_template():
     template = st.text_input("Zde napište název templatu...")
-    print(values)
+    makeSaved(values, info[3], info[2], castka, template)
 
 
 if remaining_price == 0:
