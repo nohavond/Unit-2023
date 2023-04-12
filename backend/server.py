@@ -1,13 +1,12 @@
 import streamlit as st
 from reuest import *
 from makeNewTemplate import *
-
-hostName = "localhost"
-serverPort = 3000
+from findRelatedRules import RuleFinder
 
 # Title
 st.title("Rozúčtování")
 faktura_id = st.experimental_get_query_params()["objectId"][0]
+session = st.experimental_get_query_params()["authSessionId"]
 
 try:
     item = get_item(f"https://unit2023.flexibee.eu/v2/c/company6/faktura-prijata/{faktura_id}.json?detail=full")
@@ -38,6 +37,14 @@ def load_departments():
 
 options, departments = load_departments()
 
+a = RuleFinder()
+
+template_found = a.get_rule(info[2], info[1])
+print(template_found)
+
+if template_found is not None:
+    st.info("Nalezli jsme již použitý template pro tuto firmu:")
+
 selected_options = st.multiselect('Vyberte střediska', options)
 
 
@@ -50,7 +57,7 @@ def create_slider(remaining_price, i):
                         label_visibility='hidden')
         val = castka * val * 0.01
         st.write(f"Vybraná cena: {val}")
-        popis="procento"
+        popis = "procento"
 
     elif option == 'Absolutní hodnota':
         val = st.slider(f"Vyberte částku pro středisko {i}", float(0), max_value=remaining_price,
@@ -86,10 +93,10 @@ def save_template():
     template = st.text_input("Zde napište název templatu...")
     l = []
     for vs in values:
-        for v in vs[0]:
-            l.append(v,vs[1],vs[2])
+        for i in vs:
+            l.append(i)
     o = makeSaved(l, info[3], info[2], castka, template)
-    sendDesc(json.loads(o), info[0])
+    sendDesc(json.loads(o), info[0], session)
 
 
 if remaining_price == 0:
@@ -98,8 +105,12 @@ if remaining_price == 0:
         if st.button("Udělat vyúčtování"):
             st.success("Vyúčtování odesláno.")
     elif st.button("Udělat vyúčtování"):
-        mr = makeSaved(values, info[3], info[2], castka, "")
-        sendDesc(mr, info[0])
+        l = []
+        for vs in values:
+            for i in vs:
+                l.append(i)
+        o = makeSaved(l, info[3], info[2], castka, "")
+        sendDesc(json.loads(o), info[0], session)
         st.success("Vyúčtování odesláno.")
 elif remaining_price != castka:
     st.warning("Nerozdělili jste celou částku.")
