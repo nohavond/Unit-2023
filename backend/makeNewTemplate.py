@@ -35,7 +35,7 @@ def makeDesc(o, id):
     for i in l1:
         if (i['typ'] == "zbytek"):
             i["cena"] = o["total"]-suma
-    for i in o["listIn"]:
+    for i in l1:
         o = {
                     "mnozMj": 1,
                     "cenaMj":  i["cena"],
