@@ -2,15 +2,16 @@ import json
 import requests
 import textdistance
 
-def makeSaved(listIn, desc, id, total):
+def makeSaved(listIn, desc, firma, total, name):
     o = {}
     o["listIn"] = listIn
     o["desc"] = desc
-    o["id"] = id
+    o["firma"] = firma
     o["total"] = total
+    o["name"] = name
     return json.dumps(o)
 
-def makeDesc(o):
+def makeDesc(o, id):
     l0 =[]
     suma = 0
     for i in o["listIn"]:
@@ -32,7 +33,7 @@ def makeDesc(o):
                     "stredisko": i.id
                 },
         l0.append(o)
-    l = [{"id": o["id"]},{"bezPolozek": False},{"polozkyFaktury@removeAll": True}, {"polozkyFaktury":l0}]
+    l = [{"id": id},{"bezPolozek": False},{"polozkyFaktury@removeAll": True}, {"polozkyFaktury":l0}]
     r = {"winstrom": {"faktura-prijata" : l, "@version" : "1.0"}}
     return r
 
