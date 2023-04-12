@@ -9,11 +9,11 @@ hostName = "localhost"
 serverPort = 3000
 
 # Title
-st.title("Faktury")
+st.title("Rozúčtování")
 faktura_id = st.experimental_get_query_params()["objectId"][0]
 
 try:
-    item = get_item(f"https://unit2023.flexibee.eu/c/company6/faktura-prijata/{faktura_id}.json?detail=full")
+    item = get_item(f"https://unit2023.flexibee.eu/v2/c/company6/faktura-prijata/{faktura_id}.json?detail=full")
 except:
     st.error("Faktura nebyla nalezena")
     item = []
@@ -43,20 +43,49 @@ options, departments = load_departments()
 
 selected_options = st.multiselect('Vyberte střediska', options)
 
+def create_slider(remaining_price, i):
+    st.subheader(f"Vyberte částku pro středisko {i}")
+    options = ['Procenta', 'Absolutní hodnota', 'Zbytek ceny']
+    option = st.radio("", options, key=i)
+    if option == 'Procenta':
+        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), float(remaining_price*100/castka), label_visibility='hidden')
+        val = castka * val * 0.01
+        st.write(f"Vybraná cena: {val}")
+    elif option == 'Absolutní hodnota':
+        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), max_value=remaining_price,  label_visibility='hidden')
+    else:
+        val = st.slider(f"Vyberte částku pro středisko {i}", float(0), remaining_price, value=remaining_price,  label_visibility='hidden')
+    return val
 
 # creates sliders for every stredisko
 def create_strediska(opt, remaining_price):
+    values = []
     for i in opt:
-        if (remaining_price > 0):
-            val = st.slider(f"Vyberte částku pro středisko {i}", float(0), max_value=remaining_price, key={i})
+        values.append(0)
+    counter = 0
+    for i in opt:
+        if remaining_price > 0:
+            val = create_slider(remaining_price, i)
+            values[counter] = val
+            counter += 1
             remaining_price -= val
-    return remaining_price
+    return remaining_price, values
 
 
-remaining_price = create_strediska(selected_options, castka)
+remaining_price, values = create_strediska(selected_options, castka)
+
+
+def save_template():
+    template = st.text_input("Zde napište název templatu...")
+    print(values)
+
+
 if remaining_price == 0:
-    if st.button("Udělat vyúčtování"):
+    if st.checkbox("Uložit template"):
+        save_template()
+        if st.button("Udělat vyúčtování"):
+            st.success("Vyúčtování odesláno.")
+    elif st.button("Udělat vyúčtování"):
         st.success("Vyúčtování odesláno.")
-else:
-    st.alert("Nerozdělili jste celou částku.")
-
+elif remaining_price != castka:
+    st.warning("Nerozdělili jste celou částku.")
