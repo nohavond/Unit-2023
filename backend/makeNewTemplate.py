@@ -12,7 +12,7 @@ def makeSaved(listIn, desc, firma, total, name):
     return json.dumps(o)
 
 def sendDesc(o, id):
-    sendObj(makeDesc(o,id))
+    return sendObj(makeDesc(o,id))
 
 def makeDesc(o, id):
     l0 =[]
@@ -48,14 +48,16 @@ def makeDesc(o, id):
     r = {"winstrom": {"faktura-prijata" : l, "@version" : "1.0"}}
     return r
 
-def sendObj(o):
-    url = "https://unit2023.flexibee.eu/v2/c/company6/faktura-prijata"
-    requests.post(url, json=json.dumps(o))
+def sendObj(o,auth):
+    url = f"https://unit2023.flexibee.eu/v2/c/company6/faktura-prijata.json?authSessionId={auth}"
+    return requests.post(url, json=json.dumps(o))
 
 def getDistance(string1, string2):
     return textdistance.damerau_levenshtein.normalized_distance(string1,string2)
 
 if __name__ == "__main__":
-    s = makeSaved([(10,"procento","k"),(0,"zbytek","k1")], "d", "c", 1000, "n")
+    s = makeSaved([(10,"procento","k"),(0,"zbytek","k1")], "d", "c", 1000, "")
     print(s)
-    print(makeDesc(json.loads(s),270))
+    print(makeDesc(json.loads(s),290))
+    r = sendDesc(json.loads(s),290)
+    print(r)
