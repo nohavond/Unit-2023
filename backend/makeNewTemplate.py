@@ -11,8 +11,8 @@ def makeSaved(listIn, desc, firma, total, name):
     o["name"] = name
     return json.dumps(o)
 
-def sendDesc(o, id):
-    return sendObj(makeDesc(o,id))
+def sendDesc(o, id, auth):
+    return sendObj(makeDesc(o,id), auth)
 
 def makeDesc(o, id):
     l0 =[]
