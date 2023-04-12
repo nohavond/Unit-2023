@@ -10,9 +10,10 @@ serverPort = 3000
 
 # Title
 st.title("Faktury")
+faktura_id = st.experimental_get_query_params()["objectId"][0]
 
 try:
-    item = get_item("https://unit2023.flexibee.eu/c/company6/faktura-prijata/289.json?detail=full")
+    item = get_item(f"https://unit2023.flexibee.eu/c/company6/faktura-prijata/{faktura_id}.json?detail=full")
 except:
     st.error("Faktura nebyla nalezena")
     item = []
@@ -26,10 +27,11 @@ for i in item:
     st.text(f"Popis: {info[3]}")
 
 
-def create_interface():
+@st.cache_data
+def load_departments():
     departments = get_departments()
-    options = ["Option 1", "Option 2", "Option 3"]
-    selected_departments = st.selectbox("Select an option:", options)
+    options = [departments[0]['nazev'], departments[1]['nazev'], departments[2]['nazev'], departments[3]['nazev']]
+    return options
 
 
-create_interface()
+selected_departments = st.selectbox("Výběr střediska:", load_departments())
