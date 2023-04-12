@@ -12,7 +12,9 @@ def get_info(item):
     return [item['id'], item['sumZklCelkem'], item['firma@showAs'], item['popis']]
 
 
-def get_department():
+def get_departments():
     url_department = "https://unit2023.flexibee.eu/c/company6/stredisko.json"
     departments = requests.get(url_department, auth=HTTPBasicAuth('c6.user4', 'c6.user4.flexi'))
-    return departments.json()
+    departments = departments.json()['winstrom']['stredisko']
+    return departments
+
