@@ -12,13 +12,12 @@ def makeSaved(listIn, desc, firma, total, name):
     return json.dumps(o)
 
 def sendDesc(o, id, auth):
-    return sendObj(makeDesc(o,id), auth)
+    return sendObj(makeDesc(o, id), auth)
 
 def makeDesc(o, id):
     l0 =[]
     l1 = []
     for v in o["listIn"]:
-        print(v)
         o1 = {}
         o1["hodnota"] = v[0]
         o1["typ"] = v[1]
@@ -63,7 +62,4 @@ if __name__ == "__main__":
         for v in vs:
             l.append(v)
     s = makeSaved(l, "d", "c", 1000, "")
-    print(s)
-    print(makeDesc(json.loads(s),290))
     r = sendDesc(json.loads(s),290,"")
-    print(r)

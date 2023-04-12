@@ -7,11 +7,11 @@ import textdistance
 class RuleFinder:
   auth = HTTPBasicAuth('c6.user3', 'c6.user3.flexi')
 
-  def post_rule_interface(self, template):
+  def post_rule_interface(self, template, x):
     template=json.loads(template)
     if template["name"]!="":
-      return self.post_rule(template, template["name"], template["id"], True)
-    return self.post_rule(template, template["firma"], template["id"])
+      return self.post_rule(template, template["name"], x, True)
+    return self.post_rule(template, template["firma"], x)
 
   def post_rule(self, json_to_put, name, id, direct_rule=False):
     if not direct_rule:
@@ -29,9 +29,7 @@ class RuleFinder:
         ]
       }
     }
-    print(to_put)
     r=requests.post("https://unit2023.flexibee.eu/v2/c/company6/global-store", json=to_put, auth=self.auth)
-    print(r)
     return r
 
   def get_rule(self, name, price):
@@ -39,7 +37,6 @@ class RuleFinder:
     indirect_rules = []
     r = r.json()
     for a in r['winstrom']['global-store']:
-      print(a["klic"])
       if a["klic"] == "uc-direct-"+name:
         hodnota = a["hodnota"].replace("'", '"')
         hodnota=json.loads(hodnota)
@@ -55,12 +52,3 @@ class RuleFinder:
 
 
     return None
-
-
-r = RuleFinder()
-r.post_rule_interface('{"total":579, "id":987, "firma":"blabla","name":"" }')
-print(r.get_rule("blabla", 23555))
-#r.get_rule("try")
-auth = HTTPBasicAuth('c6.user3', 'c6.user3.flexi')
-response = requests.get("https://unit2023.flexibee.eu/v2/c/company6/global-store.json?detail=full", auth=auth)
-print(response.json())

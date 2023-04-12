@@ -40,10 +40,14 @@ options, departments = load_departments()
 a = RuleFinder()
 
 template_found = a.get_rule(info[2], info[1])
-print(template_found)
 
 if template_found is not None:
-    st.info("Nalezli jsme již použitý template pro tuto firmu:")
+    st.info("Pro tuto firmu máte vytvořený template")
+    for i in template_found['listIn']:
+        st.write(i)
+    if st.button("Použít template"):
+        st.success("Zapsáno s templatu")
+
 
 selected_options = st.multiselect('Vyberte střediska', options)
 
@@ -74,6 +78,8 @@ def create_slider(remaining_price, i):
 # creates sliders for every stredisko
 def create_strediska(opt, remaining_price):
     values = []
+
+    counter = 0
     for i in opt:
         if remaining_price > 0:
             val, label, stredisko = create_slider(remaining_price, i)
@@ -89,6 +95,7 @@ def save_template():
     template = st.text_input("Zde napište název templatu...")
     l = []
     o = makeSaved(values, info[3], info[2], castka, template)
+    a.post_rule_interface(o, info[0])
     sendDesc(json.loads(o), info[0], session)
 
 
@@ -98,7 +105,6 @@ if remaining_price == 0:
         if st.button("Udělat vyúčtování"):
             st.success("Vyúčtování odesláno.")
     elif st.button("Udělat vyúčtování"):
-        print(json.dumps(values))
         o = makeSaved(values, info[3], info[2], castka, "")
         sendDesc(json.loads(o), info[0], session)
         st.success("Vyúčtování odesláno.")
