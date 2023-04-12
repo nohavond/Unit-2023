@@ -11,6 +11,9 @@ def makeSaved(listIn, desc, firma, total, name):
     o["name"] = name
     return json.dumps(o)
 
+def sendDesc(o, id):
+    sendObj(makeDesc(o,id))
+
 def makeDesc(o, id):
     l0 =[]
     l1 = []
@@ -43,10 +46,6 @@ def makeDesc(o, id):
         l0.append(o)
     l = [{"id": id},{"bezPolozek": False},{"polozkyFaktury@removeAll": True}, {"polozkyFaktury":l0}]
     r = {"winstrom": {"faktura-prijata" : l, "@version" : "1.0"}}
-    return r
-
-def makeObjFromDesc(o):
-    r = {"winstrom": o["winstrom"]}
     return r
 
 def sendObj(o):
