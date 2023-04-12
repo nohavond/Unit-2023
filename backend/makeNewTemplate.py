@@ -53,7 +53,6 @@ def sendObj(o,auth):
     return requests.post(url, json=json.dumps(o))
 
 def getDistance(string1, string2):
-<<<<<<< HEAD
     return textdistance.damerau_levenshtein.normalized_distance(string1,string2)
 
 if __name__ == "__main__":
@@ -62,6 +61,3 @@ if __name__ == "__main__":
     print(makeDesc(json.loads(s),290))
     r = sendDesc(json.loads(s),290)
     print(r)
-=======
-    return textdistance.damerau_levenshtein.normalized_distance(string1,string2)
->>>>>>> 937f1b1805512bb5e2e656fbe72b479cb3b0b5f2
