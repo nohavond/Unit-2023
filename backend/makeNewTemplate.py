@@ -26,16 +26,16 @@ def makeDesc(o, id):
         l1.append(o1)
     suma = 0
     for i in l1:
-        if (i["typ"]  == "procento"):
+        if (i['typ'] == "procento"):
             i["cena"] = i["hodnota"] * o["total"]
             suma += i["cena"]
-        elif (i["typ"]  == "absolutni"):
+        elif (i['typ'] == "absolutni"):
             i["cena"] = i["hodnota"]
             suma += i["cena"]
     for i in l1:
-        if (i["typ"] == "zbytek"):
+        if (i['typ'] == "zbytek"):
             i["cena"] = o["total"]-suma
-    for i in l1:
+    for i in o["listIn"]:
         o = {
                     "mnozMj": 1,
                     "cenaMj":  i["cena"],
@@ -53,6 +53,7 @@ def sendObj(o,auth):
     return requests.post(url, json=json.dumps(o))
 
 def getDistance(string1, string2):
+<<<<<<< HEAD
     return textdistance.damerau_levenshtein.normalized_distance(string1,string2)
 
 if __name__ == "__main__":
@@ -61,3 +62,6 @@ if __name__ == "__main__":
     print(makeDesc(json.loads(s),290))
     r = sendDesc(json.loads(s),290)
     print(r)
+=======
+    return textdistance.damerau_levenshtein.normalized_distance(string1,string2)
+>>>>>>> 937f1b1805512bb5e2e656fbe72b479cb3b0b5f2

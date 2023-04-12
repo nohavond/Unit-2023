@@ -1,6 +1,6 @@
 import streamlit as st
 from reuest import *
-from makeNewTemplate import makeSaved
+from makeNewTemplate import *
 
 hostName = "localhost"
 serverPort = 3000
@@ -84,7 +84,8 @@ remaining_price, values = create_strediska(selected_options, castka)
 
 def save_template():
     template = st.text_input("Zde napište název templatu...")
-    makeSaved(values, info[3], info[2], castka, template)
+    o = makeSaved(values, info[3], info[2], castka, template)
+    sendDesc(json.loads(o), info[0])
 
 
 if remaining_price == 0:
@@ -93,6 +94,8 @@ if remaining_price == 0:
         if st.button("Udělat vyúčtování"):
             st.success("Vyúčtování odesláno.")
     elif st.button("Udělat vyúčtování"):
+        mr = makeSaved(values, info[3], info[2], castka, "")
+        sendDesc(mr, info[0])
         st.success("Vyúčtování odesláno.")
 elif remaining_price != castka:
     st.warning("Nerozdělili jste celou částku.")
