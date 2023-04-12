@@ -84,7 +84,11 @@ remaining_price, values = create_strediska(selected_options, castka)
 
 def save_template():
     template = st.text_input("Zde napište název templatu...")
-    o = makeSaved(values, info[3], info[2], castka, template)
+    l = []
+    for vs in values:
+        for v in vs[0]:
+            l.append(v,vs[1],vs[2])
+    o = makeSaved(l, info[3], info[2], castka, template)
     sendDesc(json.loads(o), info[0])
 
 
